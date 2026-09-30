@@ -1172,11 +1172,37 @@ export function naturalEventsAfterPublish(data) {
 }
 
 async function fetchNaturalEventsForSeed({ runStartedAtMs } = {}) {
-  const [previousNhcSnapshot, previousSources] = await Promise.all([
-    readSeedSnapshot(NHC_SNAPSHOT_KEY, { strict: true }),
-    readSeedSnapshot(SOURCE_SNAPSHOT_KEY, { strict: true }),
-  ]);
-  return fetchNaturalEvents({ previousNhcSnapshot, previousSources, runStartedAtMs });
+  const diagnosticKey = 'diagnostic:natural-events:last-run';
+  const startedAt = Date.now();
+  try {
+    const [previousNhcSnapshot, previousSources] = await Promise.all([
+      readSeedSnapshot(NHC_SNAPSHOT_KEY, { strict: true }),
+      readSeedSnapshot(SOURCE_SNAPSHOT_KEY, { strict: true }),
+    ]);
+    const data = await fetchNaturalEvents({ previousNhcSnapshot, previousSources, runStartedAtMs });
+    await writeExtraKey(diagnosticKey, {
+      ok: true,
+      startedAt,
+      finishedAt: Date.now(),
+      eventCount: Array.isArray(data?.events) ? data.events.length : null,
+      unsafePublication: Boolean(data?._unsafePublication),
+      eonetFailed: Boolean(data?._eonetFailed),
+      gdacsFailedTypes: Array.isArray(data?._gdacsFailedTypes) ? data._gdacsFailedTypes : [],
+      nhcFailureDetail: data?._nhcFailureDetail || null,
+      westernPacificDataAvailable: data?.westernPacific?.dataAvailable === true,
+      hkoDataAvailable: data?.hkoWarnings?.dataAvailable === true,
+    }, 3600);
+    return data;
+  } catch (error) {
+    await writeExtraKey(diagnosticKey, {
+      ok: false,
+      startedAt,
+      finishedAt: Date.now(),
+      error: error instanceof Error ? error.message : String(error),
+      name: error instanceof Error ? error.name : null,
+    }, 3600).catch(() => {});
+    throw error;
+  }
 }
 
 export function runNaturalEventsSeed() {
