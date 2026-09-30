@@ -24,3 +24,10 @@ target/
 # node:test suite (production env + Sentry) on every request (WORLDMONITOR-VD).
 # Guarded by tests/deploy-config.test.mjs.
 api/**/*.test.mjs
+
+
+# Hobby-plan MVP: deploy the static World Monitor dashboard first.
+# The upstream api/ tree contains far more than Vercel Hobby's 12-function
+# deployment limit. Excluding it lets the core built frontend go live while
+# we selectively restore only the API endpoints the MVP actually needs.
+api/
