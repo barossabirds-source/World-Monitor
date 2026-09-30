@@ -26,8 +26,3 @@ target/
 api/**/*.test.mjs
 
 
-# Hobby-plan MVP: deploy the static World Monitor dashboard first.
-# The upstream api/ tree contains far more than Vercel Hobby's 12-function
-# deployment limit. Excluding it lets the core built frontend go live while
-# we selectively restore only the API endpoints the MVP actually needs.
-api/
