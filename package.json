@@ -90,7 +90,7 @@
     "dev:happy": "cross-env VITE_VARIANT=happy vite",
     "dev:commodity": "cross-env VITE_VARIANT=commodity vite",
     "dev:energy": "cross-env VITE_VARIANT=energy vite",
-    "postinstall": "npm run inventory:facts",
+    "postinstall": "node -e \"console.log('Skipping upstream inventory generation for Hobby MVP deploy')\"",
     "ci:blog-site": "cross-env npm_config_allow_scripts= npm --prefix blog-site ci --prefer-offline",
     "prebuild:blog": "npm run product:facts",
     "build:blog": "npm run build:blog:raw",
