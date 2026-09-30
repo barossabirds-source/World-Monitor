@@ -82,14 +82,6 @@ const SOCIAL_IMAGE_UA =
 const BRIEF_CAROUSEL_PATH_RE =
   /^\/api\/brief\/carousel\/[^/]+\/\d{4}-\d{2}-\d{2}-\d{4}\/[0-2]\/?$/;
 
-const VARIANT_HOST_MAP: Record<string, string> = {
-  'tech.worldmonitor.app': 'tech',
-  'finance.worldmonitor.app': 'finance',
-  'commodity.worldmonitor.app': 'commodity',
-  'happy.worldmonitor.app': 'happy',
-  'energy.worldmonitor.app': 'energy',
-};
-
 function hasLegacyDashboardRootState(searchParams: URLSearchParams): boolean {
   return LEGACY_DASHBOARD_ROOT_QUERY_KEYS.some((key) => searchParams.has(key));
 }
